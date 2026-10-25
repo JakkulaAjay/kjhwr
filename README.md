@@ -4,7 +4,7 @@ Web app that helps a GB energy utility's day-ahead buying desk (1) see the wind 
 gate closure for tomorrow's delivery day and (2) quantify how accurate that forecast has been, so the error can be
 priced into the purchase decision.
 
-**Live app:** `<add your Vercel / Heroku URL here>`
+**Live app:** https://kjhwr-kappa.vercel.app
 
 > **AI assistance disclosure:** this project (code, tests, documentation and video script) was built with help from
 > Claude (Anthropic), then reviewed and run by me.

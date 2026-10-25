@@ -120,3 +120,9 @@ def test_energy_uses_native_resolution_hourly_forecasts():
     assert s["actual_energy_mwh"] == pytest.approx(21600.0)
     assert s["coverage_pct"] == pytest.approx(100.0)
     assert s["step_minutes"] == 60.0
+
+
+def test_routes_work_with_and_without_api_prefix(client):
+    assert client.get("/api/health").json() == {"status": "ok"}
+    assert client.get("/health").json() == {"status": "ok"}
+    assert client.get("/meta").status_code == 200

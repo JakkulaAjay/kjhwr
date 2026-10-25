@@ -4,13 +4,14 @@ from __future__ import annotations
 import math
 from datetime import date
 
-from fastapi import FastAPI, HTTPException, Query
+from fastapi import APIRouter, FastAPI, HTTPException, Query
 from fastapi.staticfiles import StaticFiles
 
 from . import analytics, config
 from .store import store
 
 app = FastAPI(title="Wind Forecast Decision Portal", version="1.0.0")
+router = APIRouter()
 
 
 def clean(o):
@@ -38,12 +39,12 @@ def parse_date(s: str, name: str) -> date:
         raise HTTPException(422, f"{name} must be YYYY-MM-DD") from exc
 
 
-@app.get("/api/health")
+@router.get("/health")
 def health():
     return {"status": "ok"}
 
 
-@app.get("/api/meta")
+@router.get("/meta")
 def meta():
     ensure_loaded()
     lo, hi = store.delivery_range()
@@ -59,7 +60,7 @@ def meta():
     })
 
 
-@app.get("/api/decision")
+@router.get("/decision")
 def decision(delivery_date: str = Query(..., description="YYYY-MM-DD delivery day")):
     ensure_loaded()
     d = parse_date(delivery_date, "delivery_date")
@@ -69,7 +70,7 @@ def decision(delivery_date: str = Query(..., description="YYYY-MM-DD delivery da
     return clean(analytics.decision_view(store.joined, d, config.GATE_CLOSURE))
 
 
-@app.get("/api/accuracy")
+@router.get("/accuracy")
 def accuracy(date_from: str | None = None, date_to: str | None = None):
     ensure_loaded()
     lo, hi = store.delivery_range()
@@ -80,6 +81,10 @@ def accuracy(date_from: str | None = None, date_to: str | None = None):
     # horizon table is computed on the full range at load time; accuracy is filtered by day range.
     return clean(analytics.accuracy_view(store.joined, store.horizon, a, b))
 
+
+# Mounted both under /api (normal) and bare (in case a platform strips the /api prefix before the app).
+app.include_router(router, prefix="/api")
+app.include_router(router)
 
 if config.STATIC_DIR.exists():  # registered last so /api/* routes win
     app.mount("/", StaticFiles(directory=config.STATIC_DIR, html=True), name="static")

@@ -6,8 +6,7 @@ priced into the purchase decision.
 
 **Live app:** https://kjhwr-kappa.vercel.app
 
-> **AI assistance disclosure:** this project (code, tests, documentation and video script) was built with help from
-> Claude (Anthropic), then reviewed and run by me.
+
 
 ## What it does
 

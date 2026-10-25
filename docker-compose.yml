@@ -1,0 +1,6 @@
+services:
+  app:
+    build: .
+    ports: ["8000:8000"]
+    environment:
+      DATA_MODE: auto          # snapshot if backend/data has one, else live Elexon; "synthetic" for an offline demo
